@@ -25,10 +25,12 @@ public class ThreadAcao extends Thread {
     if (redeMLP != null && arquivoTreinamento != null){
       if (redeMLP.treinar(arquivoTreinamento)) {
         JOptionPane.showMessageDialog(null, "Rede MLP treinada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        Comunicador.setEnabledBotao(true);
+        Comunicador.setEnabledBotaoTestar(true);
+        Comunicador.setEnabledBotaoSalvar(true);
       } else {
         JOptionPane.showMessageDialog(null, "Houve um erro no treinamento da rede!", "Erro", JOptionPane.ERROR_MESSAGE);
-        Comunicador.setEnabledBotao(false);
+        Comunicador.setEnabledBotaoTestar(false);
+        Comunicador.setEnabledBotaoSalvar(false);
       }
       
       stop();

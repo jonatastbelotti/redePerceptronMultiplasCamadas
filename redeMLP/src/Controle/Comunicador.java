@@ -10,13 +10,18 @@ import javax.swing.JTextArea;
 public abstract class Comunicador {
   private static JTextArea jTxtLog = null;
   private static JButton jBtnTestar = null;
+  private static JButton jBtnSalvar = null;
 
   public static void setCampo(JTextArea campo) {
     jTxtLog = campo;
   }
   
-  public static void setBotao(JButton botao) {
+  public static void setBotaoTestar(JButton botao) {
     jBtnTestar = botao;
+  }
+
+  public static void setjBtnSalvar(JButton botao) {
+    jBtnSalvar = botao;
   }
   
   public static void iniciarLog(String texto){
@@ -32,9 +37,15 @@ public abstract class Comunicador {
     }
   }
   
-  public static void setEnabledBotao(boolean valor) {
+  public static void setEnabledBotaoTestar(boolean valor) {
     if (jBtnTestar != null) {
       jBtnTestar.setEnabled(valor);
+    }
+  }
+  
+  public static void setEnabledBotaoSalvar(boolean valor) {
+    if (jBtnSalvar != null) {
+      jBtnSalvar.setEnabled(valor);
     }
   }
 
