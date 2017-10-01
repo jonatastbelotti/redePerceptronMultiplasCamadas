@@ -64,7 +64,7 @@ public class MLP {
     double gradienteCamadaEscondida;
 
     numEpocas = 0;
-    erroAtual = erroMedioQuadratico(arquivoTreinamento);
+    erroAtual = erroQuadraticoMedio(arquivoTreinamento);
 
     Comunicador.iniciarLog("Início treinamento da MLP");
     Comunicador.addLog(String.format("Erro inicial: %.10f", erroAtual).replace(".", ","));
@@ -136,7 +136,7 @@ public class MLP {
         }
 
         arq.close();
-        erroAtual = erroMedioQuadratico(arquivoTreinamento);
+        erroAtual = erroQuadraticoMedio(arquivoTreinamento);
         Comunicador.addLog(String.format("%d   %.10f", numEpocas, erroAtual).replace(".", ","));
       } while (Math.abs(erroAtual - erroAnterior) > PRECISAO && numEpocas < 10000);
 
@@ -228,7 +228,7 @@ public class MLP {
     }
   }
 
-  private double erroMedioQuadratico(Arquivo arquivo) {
+  private double erroQuadraticoMedio(Arquivo arquivo) {
     FileReader arq;
     BufferedReader lerArq;
     String linha;
