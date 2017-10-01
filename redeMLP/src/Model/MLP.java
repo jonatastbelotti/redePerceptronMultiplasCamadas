@@ -67,7 +67,8 @@ public class MLP {
     erroAtual = erroMedioQuadratico(arquivoTreinamento);
 
     Comunicador.iniciarLog("Início treinamento da MLP");
-    Comunicador.addLog("Erro inicial: " + Double.toString(erroAtual).replace(".", ","));
+    Comunicador.addLog(String.format("Erro inicial: %.10f", erroAtual).replace(".", ","));
+    Comunicador.addLog("Época Eqm");
 
     try {
       do {
@@ -136,7 +137,7 @@ public class MLP {
 
         arq.close();
         erroAtual = erroMedioQuadratico(arquivoTreinamento);
-        Comunicador.addLog("" + this.numEpocas + " " + Double.toString(erroAtual).replace(".", ","));
+        Comunicador.addLog(String.format("%d   %.10f", numEpocas, erroAtual).replace(".", ","));
       } while (Math.abs(erroAtual - erroAnterior) > PRECISAO && numEpocas < 10000);
 
       Comunicador.addLog("Fim do treinamento.");
@@ -161,6 +162,7 @@ public class MLP {
     double erroRelativo;
 
     Comunicador.iniciarLog("Início teste da MLP");
+    Comunicador.addLog("Resposta - Saída rede          Erro");
     erroRelativo = 0D;
     numAmostras = 0;
 
@@ -208,16 +210,17 @@ public class MLP {
           }
           saida = funcaoLogistica(valorParcial);
 
-          //
+          //Porcentagem de erro em cada amostra
           valorParcial = (100D / saidaEsperada) * (Math.abs(saidaEsperada - saida));
           erroRelativo += valorParcial;
-          Comunicador.addLog(saidaEsperada + " " + saida + " Erro: " + valorParcial + "%");
+          Comunicador.addLog(String.format("%.4f         %.10f   %.10f%%", saidaEsperada, saida, valorParcial));
 
           linha = lerArq.readLine();
         }
         
         erroRelativo = erroRelativo / (double) numAmostras;
-        Comunicador.addLog("Fim do teste - Erro relativo medio: " + erroRelativo + "%");
+        Comunicador.addLog("Fim do teste");
+        Comunicador.addLog(String.format("Erro relativo medio: %.10f%%", erroRelativo));
 
         arq.close();
     } catch (FileNotFoundException ex) {
@@ -231,11 +234,13 @@ public class MLP {
     String linha;
     String[] vetor;
     int i;
+    int numAmostras;
     double saidaEsperada;
     double valorParcial;
     double erro;
 
     erro = 0D;
+    numAmostras = 0;
 
     try {
       arq = new FileReader(arquivo.getCaminhoCompleto());
@@ -254,6 +259,7 @@ public class MLP {
           i = 1;
         }
 
+        numAmostras++;
         entradas[0] = -1.0;
         entradas[1] = Double.parseDouble(vetor[i++].replace(",", "."));
         entradas[2] = Double.parseDouble(vetor[i++].replace(",", "."));
@@ -281,12 +287,13 @@ public class MLP {
         saida = funcaoLogistica(valorParcial);
 
         //Calculando erro
-        erro = erro + Math.pow((saidaEsperada - this.saida), 2.0);
+        erro = erro + (Math.pow((saidaEsperada - this.saida), 2D) / 2D);
 
         linha = lerArq.readLine();
       }
 
       arq.close();
+      erro = erro / (double) numAmostras;
 
     } catch (FileNotFoundException ex) {
     } catch (IOException ex) {
