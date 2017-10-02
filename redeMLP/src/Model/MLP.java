@@ -160,10 +160,12 @@ public class MLP {
     double saidaEsperada;
     double valorParcial;
     double erroRelativo;
+    double variancia;
 
     Comunicador.iniciarLog("Início teste da MLP");
     Comunicador.addLog("Resposta - Saída rede          Erro");
     erroRelativo = 0D;
+    variancia = 0D;
     numAmostras = 0;
 
     try {
@@ -213,14 +215,23 @@ public class MLP {
           //Porcentagem de erro em cada amostra
           valorParcial = (100D / saidaEsperada) * (Math.abs(saidaEsperada - saida));
           erroRelativo += valorParcial;
+          variancia += Math.pow(valorParcial, 2D);
           Comunicador.addLog(String.format("%.4f         %.10f   %.10f%%", saidaEsperada, saida, valorParcial));
 
           linha = lerArq.readLine();
         }
         
+        //Calculando erro relativo médio
         erroRelativo = erroRelativo / (double) numAmostras;
+        
+        //Calculando variância
+        variancia = variancia - ((double)numAmostras * Math.pow(erroRelativo, 2D));
+        variancia = variancia / ((double) (numAmostras - 1));
+        variancia = variancia * 100D;
+        
         Comunicador.addLog("Fim do teste");
-        Comunicador.addLog(String.format("Erro relativo medio: %.10f%%", erroRelativo));
+        Comunicador.addLog(String.format("Erro relativo médio: %.10f%%", erroRelativo));
+        Comunicador.addLog(String.format("Variância: %.10f%%", variancia));
 
         arq.close();
     } catch (FileNotFoundException ex) {
