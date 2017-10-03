@@ -67,7 +67,8 @@ public class MLP {
     erroAtual = erroQuadraticoMedio(arquivoTreinamento);
 
     Comunicador.iniciarLog("Início treinamento da MLP");
-    Comunicador.addLog(String.format("Erro inicial: %.10f", erroAtual).replace(".", ","));
+    Comunicador.addLog(String.format("Erro inicial: %.6f", erroAtual).replace(".", ","));
+    imprimirPesos();
     Comunicador.addLog("Época Eqm");
 
     try {
@@ -137,10 +138,11 @@ public class MLP {
 
         arq.close();
         erroAtual = erroQuadraticoMedio(arquivoTreinamento);
-        Comunicador.addLog(String.format("%d   %.10f", numEpocas, erroAtual).replace(".", ","));
+        Comunicador.addLog(String.format("%d   %.6f", numEpocas, erroAtual).replace(".", ","));
       } while (Math.abs(erroAtual - erroAnterior) > PRECISAO && numEpocas < 10000);
 
       Comunicador.addLog("Fim do treinamento.");
+      imprimirPesos();
     } catch (FileNotFoundException ex) {
       return false;
     } catch (IOException ex) {
@@ -216,7 +218,7 @@ public class MLP {
           valorParcial = (100D / saidaEsperada) * (Math.abs(saidaEsperada - saida));
           erroRelativo += valorParcial;
           variancia += Math.pow(valorParcial, 2D);
-          Comunicador.addLog(String.format("%.4f         %.10f   %.10f%%", saidaEsperada, saida, valorParcial));
+          Comunicador.addLog(String.format("%.4f         %.6f   %.6f%%", saidaEsperada, saida, valorParcial));
 
           linha = lerArq.readLine();
         }
@@ -230,8 +232,8 @@ public class MLP {
         variancia = variancia * 100D;
         
         Comunicador.addLog("Fim do teste");
-        Comunicador.addLog(String.format("Erro relativo médio: %.10f%%", erroRelativo));
-        Comunicador.addLog(String.format("Variância: %.10f%%", variancia));
+        Comunicador.addLog(String.format("Erro relativo médio: %.6f%%", erroRelativo));
+        Comunicador.addLog(String.format("Variância: %.6f%%", variancia));
 
         arq.close();
     } catch (FileNotFoundException ex) {
@@ -319,6 +321,30 @@ public class MLP {
 
   private double funcaoLogisticaDerivada(double valor) {
     return (BETA * Math.pow(Math.E, -1D * BETA * valor)) / Math.pow((Math.pow(Math.E, -1D * BETA * valor) + 1D), 2D);
+  }
+  
+  private void imprimirPesos() {
+    String log;
+    
+    Comunicador.addLog("Pesos camada escondida:");
+    
+    for (int i = 0; i < NUM_NEU_CAMADA_ESCONDIDA; i++) {
+      log = "";
+      
+      for (int j = 0; j < NUM_SINAIS_ENTRADA + 1; j++) {
+        log += String.format(" %f", pesosCamadaEscondida[i][j]);
+      }
+      
+      Comunicador.addLog(log);
+    }
+    
+    Comunicador.addLog("Pesos camada de saída:");
+    log = "";
+    for (int i = 0; i < NUM_NEU_CAMADA_ESCONDIDA + 1; i++) {
+      log += String.format(" %f", pesosCamadaSaida[i]);
+    }
+    Comunicador.addLog(log);
+    
   }
 
 }
